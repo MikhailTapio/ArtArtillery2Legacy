@@ -15,6 +15,7 @@ import net.minecraft.world.World
 class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) with IItemTickable with IAmmunitionRenderable {
   this.setTextureName("aa2:weapon/" + id)
   this.setMaxDamage(magazine * 300)
+  this.setMaxStackSize(1)
 
   override def isFull3D: Boolean = true
 
@@ -45,6 +46,7 @@ class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) 
       player.playSound("random.click", 0.5F, 1F)
       return
     }
+    player.playSound("aa2:launcher.reload", 1F, 1F)
     inventory.consumeInventoryItem(shell)
     nbt.setInteger(C_MAGAZINE, c + 1)
     nbt.setInteger(RCD, 60)
@@ -61,9 +63,13 @@ class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) 
     if (!checkAvailable(entityLiving, stack, nbt)) return
     //todo:c
     val shell = new ProjectileShell(world, entityLiving)
+    entityLiving.playSound("aa2:launcher.launch", 1F, 1F)
     if (!world.isRemote) world.spawnEntityInWorld(shell)
     nbt.setInteger(FCD, 60)
     stack.damageItem(1, entityLiving)
+    val rand = entityLiving.worldObj.rand
+    entityLiving.rotationPitch -= (3F + rand.nextFloat())
+    entityLiving.rotationYawHead += (-2F + 4 * rand.nextFloat())
   }
 
   def checkAvailable(player: EntityLivingBase, stack: ItemStack, nbt: NBTTagCompound): Boolean = {

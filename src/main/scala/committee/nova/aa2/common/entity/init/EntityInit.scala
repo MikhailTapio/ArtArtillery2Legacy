@@ -12,7 +12,7 @@ object EntityInit {
   private var nextID = 0
 
   def init(): Unit = {
-    registerEntity(classOf[ProjectileShell], "GenericShell", 96, 1, sendsVUpdates = true)
+    registerEntity(classOf[ProjectileShell], "GenericShell", 96, 10, sendsVUpdates = true)
     registerEntityRenderer(classOf[ProjectileShell], new RenderShell)
   }
 

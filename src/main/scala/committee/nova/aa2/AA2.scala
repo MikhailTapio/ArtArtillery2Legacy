@@ -12,7 +12,7 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 
 object AA2 {
-  final val VERSION = "1.0.0"
+  final val VERSION = "1.0.0pre1"
   final val NAME = "Art?Artillery!II"
   final val MODID = "aa2"
   final val tabAA2 = new CreativeTabs("aa2.main") {

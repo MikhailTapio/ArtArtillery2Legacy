@@ -1,0 +1,14 @@
+{
+  "launcher.reload": {
+    "category": "player",
+    "sounds": [
+      "reload"
+    ]
+  },
+  "launcher.launch": {
+    "category": "player",
+    "sounds": [
+      "launch"
+    ]
+  }
+}

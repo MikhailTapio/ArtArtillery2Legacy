@@ -9,4 +9,14 @@ trait IAmmunitionRenderable {
     val nbt = ItemStackUtils.getOrCreateTag(stack)
     nbt.getInteger(NBTReference.C_MAGAZINE)
   }
+
+  def getReloadTimeLeft(stack: ItemStack): Float = {
+    val nbt = ItemStackUtils.getOrCreateTag(stack)
+    nbt.getInteger(NBTReference.RCD) * 1F / 20F
+  }
+
+  def getCoolDownTimeLeft(stack: ItemStack): Float = {
+    val nbt = ItemStackUtils.getOrCreateTag(stack)
+    nbt.getInteger(NBTReference.FCD) * 1F / 20F
+  }
 }

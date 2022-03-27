@@ -1,5 +1,7 @@
 package committee.nova.aa2.common.entity.impl
 
+import net.minecraft.block.BlockPane
+import net.minecraft.block.material.Material
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.projectile.EntityThrowable
 import net.minecraft.util.{DamageSource, MathHelper, MovingObjectPosition}
@@ -7,6 +9,7 @@ import net.minecraft.world.World
 
 class ProjectileShell(worldIn: World) extends EntityThrowable(worldIn) {
   val shotByShell: DamageSource = new DamageSource("shotByShell").setProjectile()
+  var shot = false
   var penetration = 5
 
   def this(world: World, entity: EntityLivingBase) {
@@ -31,10 +34,13 @@ class ProjectileShell(worldIn: World) extends EntityThrowable(worldIn) {
       val entity = m.entityHit
       //todo:c
       if (entity == null) return
+      if (!shot) {
+        shot = true
+        return
+      }
       penetration -= 1
       if (penetration <= 0) {
         explode(m)
-        this.setDead()
         return
       }
       entity.attackEntityFrom(shotByShell, 5F)
@@ -42,18 +48,32 @@ class ProjectileShell(worldIn: World) extends EntityThrowable(worldIn) {
       return
     }
     if (hitType == MovingObjectPosition.MovingObjectType.BLOCK) {
-      //todo:c
-      explode(m)
+      val block = worldIn.getBlock(m.blockX, m.blockY, m.blockZ)
+      val material = block.getMaterial
+      if (material != Material.glass && material != Material.ice) {
+        explode(m)
+        return
+      }
+      penetration -= (if (block.isInstanceOf[BlockPane]) 1 else 2)
+      if (penetration <= 0) {
+        explode(m)
+        return
+      }
+      worldIn.setBlockToAir(m.blockX, m.blockY, m.blockZ)
+      worldIn.playSoundEffect(m.blockX, m.blockY, m.blockZ, "dig.glass", 1F, 1F)
     }
-    this.setDead()
   }
 
   def speedDecay(width: Float): Unit = {
-    val decayAmount = Math.max(0F, 1 - Math.sqrt(width / 10))
+    val decayAmount = Math.max(0.6F, 1 - Math.sqrt(width / 10))
     this.motionX *= decayAmount
     this.motionY *= decayAmount
     this.motionZ *= decayAmount
   }
 
-  def explode(m: MovingObjectPosition): Unit = worldIn.createExplosion(this.getThrower, m.hitVec.xCoord, m.hitVec.yCoord, m.hitVec.zCoord, 2F, true)
+  def explode(m: MovingObjectPosition): Unit = {
+    worldIn.createExplosion(this.getThrower, m.hitVec.xCoord, m.hitVec.yCoord, m.hitVec.zCoord, 2F, true)
+    this.setDead()
+  }
+
 }
