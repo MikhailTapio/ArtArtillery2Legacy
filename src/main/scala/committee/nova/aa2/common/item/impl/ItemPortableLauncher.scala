@@ -1,8 +1,9 @@
 package committee.nova.aa2.common.item.impl
 
 import committee.nova.aa2.common.entity.impl.ProjectileShell
-import committee.nova.aa2.common.item.api.IItemTickable
+import committee.nova.aa2.common.item.api.{IAmmunitionRenderable, IItemTickable}
 import committee.nova.aa2.common.item.base.ItemMeleeless
+import committee.nova.aa2.common.item.base.NBTReference._
 import committee.nova.aa2.common.item.init.ItemInit
 import committee.nova.aa2.common.util.misc.ItemStackUtils
 import net.minecraft.entity.EntityLivingBase
@@ -11,11 +12,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 
-class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) with IItemTickable {
-  val RCD = "rcd"
-  val FCD = "fcd"
-  val C_MAGAZINE = "c_magazine"
-  val M_MAGAZINE = "m_magazine"
+class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) with IItemTickable with IAmmunitionRenderable {
   this.setTextureName("aa2:weapon/" + id)
   this.setMaxDamage(magazine * 300)
 
