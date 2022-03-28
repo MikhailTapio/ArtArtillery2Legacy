@@ -1,18 +1,23 @@
 package committee.nova.aa2.common.item.impl
 
+import committee.nova.aa2.common.config.CommonConfig
 import committee.nova.aa2.common.entity.impl.ProjectileShell
-import committee.nova.aa2.common.item.api.{IAmmunitionRenderable, IItemTickable}
+import committee.nova.aa2.common.item.api.{IItemTickable, IReloadable}
 import committee.nova.aa2.common.item.base.ItemMeleeless
 import committee.nova.aa2.common.item.base.NBTReference._
+import committee.nova.aa2.common.item.enchantment.init.EnchantmentInit
 import committee.nova.aa2.common.item.init.ItemInit
 import committee.nova.aa2.common.util.misc.ItemStackUtils
+import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 
-class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) with IItemTickable with IAmmunitionRenderable {
+import scala.util.Random
+
+class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) with IItemTickable with IReloadable {
   this.setTextureName("aa2:weapon/" + id)
   this.setMaxDamage(magazine * 300)
   this.setMaxStackSize(1)
@@ -49,7 +54,9 @@ class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) 
     player.playSound("aa2:launcher.reload", 1F, 1F)
     inventory.consumeInventoryItem(shell)
     nbt.setInteger(C_MAGAZINE, c + 1)
-    nbt.setInteger(RCD, 60)
+    val effect = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.enchantmentMap(EnchantmentInit.quickReload).effectId, stack)
+    val rcd = ItemStackUtils.getCdTime(effect, CommonConfig.baseReloadTime)
+    nbt.setInteger(RCD, rcd)
   }
 
   override def onEntitySwing(entityLiving: EntityLivingBase, stack: ItemStack): Boolean = {
@@ -62,10 +69,15 @@ class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) 
     val nbt = ItemStackUtils.getOrCreateTag(stack)
     if (!checkAvailable(entityLiving, stack, nbt)) return
     //todo:c
-    val shell = new ProjectileShell(world, entityLiving)
+    val heavy = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.enchantmentMap(EnchantmentInit.shs).effectId, stack) > 0
+    val he = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.enchantmentMap(EnchantmentInit.hes).effectId, stack) > 0
+    val quick = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.enchantmentMap(EnchantmentInit.enhancedCase).effectId, stack) > 0
+    val shell = new ProjectileShell(world, entityLiving, he, heavy, quick)
     entityLiving.playSound("aa2:launcher.launch", 1F, 1F)
     if (!world.isRemote) world.spawnEntityInWorld(shell)
-    nbt.setInteger(FCD, 60)
+    val effect = EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.enchantmentMap(EnchantmentInit.quickCooling).effectId, stack)
+    val fcd = ItemStackUtils.getCdTime(effect, CommonConfig.baseCoolDownTime)
+    nbt.setInteger(FCD, fcd)
     stack.damageItem(1, entityLiving)
     val rand = entityLiving.worldObj.rand
     entityLiving.rotationPitch -= (3F + rand.nextFloat())
@@ -83,9 +95,10 @@ class ItemPortableLauncher(id: String, magazine: Int) extends ItemMeleeless(id) 
 
   def consume(stack: ItemStack): Boolean = {
     val nbt = ItemStackUtils.getOrCreateTag(stack)
-    val c = nbt.getInteger(C_MAGAZINE) - 1
-    if (c < 0) return false
-    nbt.setInteger(C_MAGAZINE, c)
+    val c = nbt.getInteger(C_MAGAZINE)
+    if (c < 1) return false
+    val grandeted = new Random().nextDouble() > (2 - Math.pow(1.1, EnchantmentHelper.getEnchantmentLevel(EnchantmentInit.enchantmentMap(EnchantmentInit.grandet).effectId, stack)))
+    nbt.setInteger(C_MAGAZINE, if (grandeted) c else c - 1)
     true
   }
 

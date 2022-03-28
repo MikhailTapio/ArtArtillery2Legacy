@@ -8,4 +8,6 @@ object ItemStackUtils {
     if (stack.stackTagCompound == null) stack.setTagCompound(new NBTTagCompound)
     stack.stackTagCompound
   }
+
+  def getCdTime(effect: Int, base: Int): Int = Math.max(2, (Math.pow(0.8, effect) * base).toInt)
 }

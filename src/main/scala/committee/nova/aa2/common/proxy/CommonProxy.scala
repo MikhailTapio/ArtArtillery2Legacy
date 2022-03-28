@@ -1,6 +1,8 @@
 package committee.nova.aa2.common.proxy
 
 import committee.nova.aa2.client.render.overlay.init.RenderOverlayInit
+import committee.nova.aa2.common.config.CommonConfig
+import committee.nova.aa2.common.item.enchantment.init.EnchantmentInit
 import committee.nova.aa2.common.item.recipe.RecipeInit
 import committee.nova.aa2.common.util.core.TickHandler
 import committee.nova.aa2.common.util.registry.RegistryHandler
@@ -11,11 +13,13 @@ import net.minecraftforge.common.MinecraftForge
 class CommonProxy {
 
   def preInit(event: FMLPreInitializationEvent): Unit = {
+    new CommonConfig(event)
     RegistryHandler.register()
   }
 
   def init(event: FMLInitializationEvent): Unit = {
     RecipeInit.init()
+    EnchantmentInit.init()
     FMLCommonHandler.instance().bus().register(new TickHandler)
   }
 

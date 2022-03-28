@@ -1,5 +1,11 @@
 death.attack.shotByShell=%1$s was crushed by a shell
 death.attack.shotByShell.player=%1$s was crushed by %2$s using portable launcher
+enchantment.aa2.quickReload=Quick Reload
+enchantment.aa2.quickCooling=Quick Cooling
+enchantment.aa2.superHeavyShell=Super Heavy Shell
+enchantment.aa2.highExplosiveShell=High-explosive Shell
+enchantment.aa2.enhancedCase=Enhanced Case
+enchantment.aa2.grandet=Grandet
 item.aa2.pl_0.name=Portable Launcher
 item.aa2.pl_1.name=Portable Launcher(Tri)
 item.aa2.pl_2.name=Portable Launcher(Hex)

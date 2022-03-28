@@ -2,7 +2,7 @@ package committee.nova.aa2.client.render.overlay.impl
 
 import com.ibm.icu.text.MessageFormat
 import committee.nova.aa2.client.render.overlay.util.{MappedTexture, OverlayRenderUtils}
-import committee.nova.aa2.common.item.api.IAmmunitionRenderable
+import committee.nova.aa2.common.item.api.IReloadable
 import committee.nova.aa2.common.util.misc.FormatUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.{Gui, ScaledResolution}
@@ -21,10 +21,10 @@ class OverlayAmmunition() extends Gui {
     if (stack == null) return
     val item = stack.getItem
     item match {
-      case _: IAmmunitionRenderable =>
+      case _: IReloadable =>
         val resolutionScaled = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight)
         val y: Int = resolutionScaled.getScaledHeight
-        val renderable = item.asInstanceOf[IAmmunitionRenderable]
+        val renderable = item.asInstanceOf[IReloadable]
         val amount = renderable.getCurrentMagazine(stack)
         val show = amount > 0
         val mappedTexture = new MappedTexture(if (show) 1 else 0)
