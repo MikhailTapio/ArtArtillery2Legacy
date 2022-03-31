@@ -5,6 +5,7 @@ import net.minecraft.block.BlockPane
 import net.minecraft.block.material.Material
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.projectile.EntityThrowable
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.{DamageSource, MathHelper, MovingObjectPosition}
 import net.minecraft.world.World
 
@@ -99,4 +100,21 @@ class ProjectileShell(worldIn: World) extends EntityThrowable(worldIn) {
 
   override def getGravityVelocity: Float = 0.01F
 
+  override def readEntityFromNBT(tag: NBTTagCompound): Unit = {
+    penetration = tag.getByte("penetration")
+    quick = tag.getBoolean("quick")
+    isHeavy = tag.getBoolean("heavy")
+    isHE = tag.getBoolean("he")
+    shot = tag.getBoolean("shot")
+    super.readEntityFromNBT(tag)
+  }
+
+  override def writeEntityToNBT(tag: NBTTagCompound): Unit = {
+    tag.setByte("penetration", penetration.toByte)
+    tag.setBoolean("quick", quick)
+    tag.setBoolean("heavy", isHeavy)
+    tag.setBoolean("he", isHE)
+    tag.setBoolean("shot", shot)
+    super.writeEntityToNBT(tag)
+  }
 }
