@@ -5,6 +5,7 @@ import committee.nova.aa2.client.render.entity.RenderShell
 import committee.nova.aa2.common.entity.impl.ProjectileShell
 import cpw.mods.fml.client.registry.RenderingRegistry
 import cpw.mods.fml.common.registry.EntityRegistry
+import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.minecraft.client.renderer.entity.Render
 import net.minecraft.entity.Entity
 
@@ -21,5 +22,6 @@ object EntityInit {
     EntityRegistry.registerModEntity(entityClass, name, nextID, AA2.instance, trackingRange, updateFreq, sendsVUpdates)
   }
 
+  @SideOnly(Side.CLIENT)
   private def registerEntityRenderer(entityClass: Class[_ <: Entity], render: Render): Unit = RenderingRegistry.registerEntityRenderingHandler(entityClass, render)
 }

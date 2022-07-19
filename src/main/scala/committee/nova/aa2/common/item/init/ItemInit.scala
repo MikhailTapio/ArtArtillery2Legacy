@@ -17,11 +17,7 @@ object ItemInit {
     )
 
 
-  def init(): Unit = {
-    itemList.foreach(list => register(list._1, list._2))
-  }
+  def init(): Unit = itemList.foreach(list => register(list._1, list._2))
 
-  private def register(id: String, item: Item): Unit = {
-    GameRegistry.registerItem(item, id)
-  }
+  private def register(id: String, item: Item): Unit = GameRegistry.registerItem(item, id)
 }
