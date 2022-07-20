@@ -12,14 +12,14 @@ import net.minecraft.entity.Entity
 object EntityInit {
   private var nextID = 0
 
-  def init(): Unit = {
-    registerEntity(classOf[ProjectileShell], "GenericShell", 96, 10, sendsVUpdates = true)
-    registerEntityRenderer(classOf[ProjectileShell], new RenderShell)
-  }
+  def initCommon(): Unit = registerEntity(classOf[ProjectileShell], "GenericShell", 96, 10, sendsVUpdates = true)
+
+  @SideOnly(Side.CLIENT)
+  def initClient(): Unit = registerEntityRenderer(classOf[ProjectileShell], new RenderShell)
 
   private def registerEntity(entityClass: Class[_ <: Entity], name: String, trackingRange: Int, updateFreq: Int, sendsVUpdates: Boolean): Unit = {
     nextID += 1
-    EntityRegistry.registerModEntity(entityClass, name, nextID, AA2.instance, trackingRange, updateFreq, sendsVUpdates)
+    EntityRegistry.registerModEntity(entityClass, name, nextID, AA2, trackingRange, updateFreq, sendsVUpdates)
   }
 
   @SideOnly(Side.CLIENT)
